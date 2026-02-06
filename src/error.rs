@@ -1,12 +1,17 @@
 use std::io;
 
-use binder::StatusCode;
-use thiserror::Error;
+use rsbinder::error::StatusCode;
 
-#[derive(Error, Debug)]
-pub enum DumpError {
-    #[error("IO Error")]
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error(transparent)]
     IO(#[from] io::Error),
-    #[error("Dump error")]
-    DumpStatus(#[from] StatusCode)
+    #[error(transparent)]
+    DumpStatus(#[from] StatusCode),
+    #[error("invalid method call for current `Dumpsys` pipe-type")]
+    InvalidMethod,
+    #[error("service not exist")]
+    ServiceNotExist,
+    #[error("no such entry found in `Dumpsys`")]
+    NoEntryFound,
 }
